@@ -6,8 +6,7 @@ import doobie.util.ExecutionContexts
 import org.service.ConfigurationService
 
 object DBProvider {
-
-   val initializer: Resource[IO, HikariTransactor[IO]] = for {
+   val provider: Resource[IO, HikariTransactor[IO]] = for {
     ce <- ExecutionContexts.cachedThreadPool[IO]
     xa <- HikariTransactor.newHikariTransactor[IO](
       driverClassName = ConfigurationService.driver,

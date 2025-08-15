@@ -1,10 +1,17 @@
 package org.db.model
 
 import cats.effect.MonadCancelThrow
+import doobie.Transactor
 import doobie.implicits._
-import doobie.{Read, Transactor, Write}
+import io.circe.generic.semiauto._
+import io.circe.{Decoder, Encoder}
 
 case class CustomRecord(id : Int, value : String)
+
+object CustomRecord {
+  implicit val customRecordEncoder: Encoder[CustomRecord] = deriveEncoder
+  implicit val customRecordDecoder: Decoder[CustomRecord] = deriveDecoder
+}
 
 trait Records[F[_]] {
   def findById(id: Int): F[Option[CustomRecord]]
@@ -17,7 +24,6 @@ object Records {
   def make[F[_]: MonadCancelThrow](xa: Transactor[F]): Records[F] = {
     new Records[F] {
 
-      import RecordSQL._
       def findById(id: Int): F[Option[CustomRecord]] =
         sql"SELECT id, value FROM scl.records WHERE id = $id".query[CustomRecord].option.transact(xa)
 
@@ -36,14 +42,5 @@ object Records {
       }
     }
   }
-
-}
-
-private object RecordSQL {
-  implicit val recordRead: Read[CustomRecord] =
-    Read[(Int, String)].map { case (id, value) => CustomRecord(id, value) }
-
-  implicit val recordWrite: Write[CustomRecord] =
-    Write[(Int, String)].contramap { record => (record.id, record.value)  }
 
 }
