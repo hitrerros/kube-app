@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-app-web-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kube-app-web-client
+  template:
+    metadata:
+      labels:
+        app: kube-app-web-client
+    spec:
+      containers:
+        - name: kube-app-web-client
+          image: kube-app-client:latest   # Local image name
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+          env:
+            - name: APP_ENV
+              value: "container"    # Optional extra env var
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-app-web-client-service
+spec:
+  selector:
+    app: kube-app-web-client
+  ports:
+    - protocol: TCP
+      port: 8080         # Service port
+      targetPort: 8081   # Container port
+  type: NodePort         # For local cluster testing; in prod, use LoadBalancer

@@ -3,26 +3,18 @@ package org.db.model
 import cats.effect.MonadCancelThrow
 import doobie.Transactor
 import doobie.implicits._
-import io.circe.generic.semiauto._
-import io.circe.{Decoder, Encoder}
+import org.commons4n.CustomRecord
 
-case class CustomRecord(id : Int, value : String)
-
-object CustomRecord {
-  implicit val customRecordEncoder: Encoder[CustomRecord] = deriveEncoder
-  implicit val customRecordDecoder: Decoder[CustomRecord] = deriveDecoder
-}
-
-trait Records[F[_]] {
+trait RecordsProvider[F[_]] {
   def findById(id: Int): F[Option[CustomRecord]]
   def findAll: F[List[CustomRecord]]
   def insertRecord(value: String): F[Int]
   def initializeSchema : F[Unit]
 }
 
-object Records {
-  def make[F[_]: MonadCancelThrow](xa: Transactor[F]): Records[F] = {
-    new Records[F] {
+object RecordsProvider {
+  def make[F[_]: MonadCancelThrow](xa: Transactor[F]): RecordsProvider[F] = {
+    new RecordsProvider[F] {
 
       def findById(id: Int): F[Option[CustomRecord]] =
         sql"SELECT id, value FROM scl.records WHERE id = $id".query[CustomRecord].option.transact(xa)

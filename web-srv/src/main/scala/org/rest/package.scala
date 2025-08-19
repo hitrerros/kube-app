@@ -1,7 +1,7 @@
 package org
 
 import cats.effect.IO
-import org.db.model.CustomRecord
+import org.commons4n.CustomRecord
 import org.http4s.circe.{jsonEncoderOf, jsonOf}
 import org.http4s.{EntityDecoder, EntityEncoder}
 

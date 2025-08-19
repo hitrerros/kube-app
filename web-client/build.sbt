@@ -2,13 +2,10 @@ import scala.collection.Seq
 
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "2.13.16"
-
 // depedendency versions
 val http4sVersion = "0.23.25"
 val catsEffectVersion   = "3.5.4"
-val circeVersion = "0.14.9"
-val Fs2KafkaVersion   = "3.5.1"
+val fs2KafkaVersion   = "3.5.1"
 
 // depedendencies
 libraryDependencies ++= Seq(
@@ -17,17 +14,16 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-ember-server" % http4sVersion,
   "org.http4s" %% "http4s-server"       % http4sVersion,
   "org.http4s" %% "http4s-circe"        % http4sVersion,
-  // circe
-  "io.circe"   %% "circe-generic"      % circeVersion,
-  "io.circe"   %% "circe-parser"       % circeVersion,
   // logback
   "ch.qos.logback" % "logback-classic" % "1.5.13",
   // config
   "com.typesafe" % "config" % "1.3.0",
   // cats effects
   "org.typelevel" %% "cats-effect"       % catsEffectVersion,
-  // fs-kafka
-  "com.github.fd4s" %% "fs2-kafka" % Fs2KafkaVersion
+  "org.typelevel" %% "log4cats-slf4j" % "2.7.0", // logger
+// fs-kafka
+  "com.github.fd4s" %% "fs2-kafka" % fs2KafkaVersion
+
 )
 
 // FAT Jar assembly

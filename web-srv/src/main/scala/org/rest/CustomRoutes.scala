@@ -1,7 +1,8 @@
 package org.rest
 import cats.effect.IO
 import io.circe.syntax.EncoderOps
-import org.db.model.{CustomRecord, Records}
+import org.commons4n.CustomRecord
+import org.db.model.RecordsProvider
 import org.http4s._
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
@@ -9,7 +10,7 @@ import org.service.kafka.KafkaService
 
 object CustomRoutes {
 
-  def routes(db: Records[IO],kafkaService : KafkaService[IO]): HttpRoutes[IO] = {
+  def routes(db: RecordsProvider[IO], kafkaService : KafkaService[IO]): HttpRoutes[IO] = {
     val dsl = new Http4sDsl[IO] {}
     import dsl._
 

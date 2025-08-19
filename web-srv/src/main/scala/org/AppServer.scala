@@ -3,7 +3,7 @@ package org
 import cats.effect._
 import com.comcast.ip4s.IpLiteralSyntax
 import org.db.DBProvider
-import org.db.model.Records
+import org.db.model.RecordsProvider
 import org.http4s.ember.server._
 import org.rest.CustomRoutes
 import org.service.kafka.KafkaService
@@ -18,7 +18,7 @@ object AppServer extends IOApp {
     } yield (xa,kafka)
 
     resources.use { case(xa,kafka) =>
-      val dbService = Records.make[IO](xa)
+      val dbService = RecordsProvider.make[IO](xa)
 
       for {
         _ <- dbService.initializeSchema

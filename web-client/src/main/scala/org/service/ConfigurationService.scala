@@ -11,5 +11,5 @@ object ConfigurationService {
 
   val kafkaBootstrapUrl: String = rootConfig.getString(s"${kafkaPrefix}.bootstrapUrl")
   val kafkaTopic: String = rootConfig.getString(s"${kafkaPrefix}.topic")
-
+  val kafkaGroupId: String = rootConfig.getString(s"${kafkaPrefix}.groupId")
 }

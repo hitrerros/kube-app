@@ -1,13 +1,10 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
-ThisBuild / scalaVersion := "2.13.16"
-
 
 // depedendency versions
 val http4sVersion = "0.23.25"
 val catsEffectVersion   = "3.5.4"
 val doobieVersion = "1.0.0-RC1"
-val circeVersion = "0.14.9"
-val Fs2KafkaVersion   = "3.5.1"
+val fs2KafkaVersion   = "3.5.1"
 
 // depedendencies
 libraryDependencies ++= Seq(
@@ -16,9 +13,6 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-ember-server" % http4sVersion,
   "org.http4s" %% "http4s-server"       % http4sVersion,
   "org.http4s" %% "http4s-circe"        % http4sVersion,
-  // circe
-  "io.circe"   %% "circe-generic"      % circeVersion,
-  "io.circe"   %% "circe-parser"       % circeVersion,
   // doobie
   "org.tpolecat" %% "doobie-core" % doobieVersion,
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
@@ -30,7 +24,7 @@ libraryDependencies ++= Seq(
   // cats effects
   "org.typelevel" %% "cats-effect"       % catsEffectVersion,
   // fs-kafka
-  "com.github.fd4s" %% "fs2-kafka" % Fs2KafkaVersion
+  "com.github.fd4s" %% "fs2-kafka" % fs2KafkaVersion,
 )
 
 // FAT Jar assembly
