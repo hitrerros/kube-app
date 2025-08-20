@@ -25,7 +25,7 @@ object AppServer extends IOApp {
         code <- EmberServerBuilder
           .default[IO]
       .withHost(ipv4"0.0.0.0")
-      .withPort(port"8080")
+      .withPort(port"8081")
       .withHttpApp(CustomRoutes.routes(dbService,kafka).orNotFound)
       .build
           .useForever

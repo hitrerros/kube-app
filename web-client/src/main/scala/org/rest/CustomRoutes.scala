@@ -10,7 +10,7 @@ object CustomRoutes {
     import dsl._
 
     HttpRoutes.of[IO] {
-      case GET -> Root / "records" =>
+      case GET -> Root / "asm" =>
         Ok("gotcha")
     }
   }

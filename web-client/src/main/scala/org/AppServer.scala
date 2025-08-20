@@ -9,18 +9,19 @@ import org.service.kafka.KafkaService
 object AppServer extends IOApp{
 
   def run(args: List[String]): IO[ExitCode] = {
-    for {
-      _ <- KafkaService.kafkaConsumerStream[IO]
-      code <- EmberServerBuilder
-        .default[IO]
-        .withHost(ipv4"0.0.0.0")
-        .withPort(port"8081")
-        .withHttpApp(
-          CustomRoutes.routes.orNotFound
-        )
-        .build
-        .useForever
+    KafkaService.provider[IO].use { _ =>
+      for {
+        code <- EmberServerBuilder
+          .default[IO]
+          .withHost(ipv4"0.0.0.0")
+          .withPort(port"8081")
+          .withHttpApp(
+            CustomRoutes.routes.orNotFound
+          )
+          .build
+          .useForever
 
-    } yield code
+      } yield code
+    }
   }
 }
