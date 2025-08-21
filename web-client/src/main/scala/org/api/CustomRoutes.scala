@@ -19,7 +19,7 @@ object CustomRoutes {
     // login
     case GET -> Root / "login" =>
       val uri = authorizeUri
-        .withQueryParam("client_id", ConfigurationService.ouathClientId)
+        .withQueryParam("client_id", ConfigurationService.oauthClientId)
         .withQueryParam("redirect_uri", redirectUri)
         .withQueryParam("scope", "read:user user:email")
 
@@ -29,8 +29,8 @@ object CustomRoutes {
     case GET -> Root / "callback" :? CodeQueryParamMatcher(code) =>
       val tokenReq = Request[IO](Method.POST, tokenUri)
         .withEntity(UrlForm(
-          "client_id" -> ConfigurationService.ouathClientId,
-          "client_secret" -> ConfigurationService.ouathClientSecret,
+          "client_id" -> ConfigurationService.oauthClientId,
+          "client_secret" -> ConfigurationService.oauthClientSecret,
           "code" -> code,
           "redirect_uri" -> redirectUri.toString()
         ))
