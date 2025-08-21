@@ -6,8 +6,8 @@ import cats.implicits.toFunctorOps
 import cats.syntax.all._
 import fs2.kafka._
 import org.commons4n.CustomRecord
+import org.commons4n.service.MessageCache
 import org.service.ConfigurationService.{kafkaBootstrapUrl, kafkaGroupId, kafkaTopic}
-import org.service.MessageCache
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 

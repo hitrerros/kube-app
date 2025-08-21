@@ -2,10 +2,10 @@ package org
 
 import cats.effect._
 import com.comcast.ip4s.IpLiteralSyntax
+import org.api.CustomRoutes
 import org.db.DBProvider
 import org.db.model.RecordsProvider
 import org.http4s.ember.server._
-import org.rest.CustomRoutes
 import org.service.kafka.KafkaService
 
 object AppServer extends IOApp {

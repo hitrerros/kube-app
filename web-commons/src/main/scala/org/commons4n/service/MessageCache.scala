@@ -1,4 +1,4 @@
-package org.service
+package org.commons4n.service
 
 import cats.effect._
 import cats.effect.kernel.Ref

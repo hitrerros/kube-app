@@ -1,4 +1,4 @@
-package org.rest
+package org.api
 import cats.effect.IO
 import io.circe.syntax.EncoderOps
 import org.commons4n.CustomRecord
