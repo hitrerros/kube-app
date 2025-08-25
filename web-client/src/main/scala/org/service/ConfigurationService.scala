@@ -29,4 +29,5 @@ object ConfigurationService {
   val tokenUri: Uri =  Uri.fromString(oauthConfig.getString("oauth.tokenUri"))
   val userUri: Uri =  Uri.fromString(oauthConfig.getString("oauth.userUri"))
   val redirectUri: Uri =  Uri.fromString(oauthConfig.getString("oauth.redirectUri"))
+  val authCookie: String =  oauthConfig.getString("oauth.authCookie")
 }

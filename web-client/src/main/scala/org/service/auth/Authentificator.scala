@@ -9,6 +9,7 @@ import org.http4s.client._
 import org.http4s.dsl.io._
 import org.http4s.headers.Authorization
 import org.http4s.server.AuthMiddleware
+import org.service.ConfigurationService
 import org.service.ConfigurationService.userUri
 import org.typelevel.ci.CIStringSyntax
 
@@ -16,20 +17,30 @@ import org.typelevel.ci.CIStringSyntax
 object Authentificator {
 
   def authUser(client: Client[IO]): AuthMiddleware[IO, AuthUser] = {
-    val validate: Kleisli[IO, Request[IO], Either[String, AuthUser]] = Kleisli { req =>
+    def validateToken(token : String) : IO[Either[String, AuthUser]] = {
+      val userReq = Request[IO](Method.GET, userUri)
+        .withHeaders(
+          Authorization(Credentials.Token(AuthScheme.Bearer, token)),
+          Header.Raw(ci"User-Agent", "http4s-oauth-app")
+        )
+
+      client.expectOption[AuthUser](userReq)(jsonOf[IO, AuthUser]).map {
+        case Some(user) => Right(user)
+        case None => Left("Invalid token")
+      }
+    }
+
+    def validate: Kleisli[IO, Request[IO], Either[String, AuthUser]] = {
+       Kleisli { req =>
       req.headers.get[headers.Authorization] match {
         case Some(headers.Authorization(Credentials.Token(AuthScheme.Bearer, token))) =>
-          val userReq = Request[IO](Method.GET, userUri)
-            .withHeaders(
-              Authorization(Credentials.Token(AuthScheme.Bearer, token)),
-              Header.Raw(ci"User-Agent", "http4s-oauth-app")
-            )
-          client.expectOption[AuthUser](userReq)(jsonOf[IO, AuthUser]).map {
-            case Some(user) => Right(user)
-            case None       => Left("Invalid token")
-          }
-        case _ => IO.pure(Left("Missing token"))
+          validateToken(token)
+        case _ =>  req.cookies.find(_.name == ConfigurationService.authCookie) match {
+          case Some(cookie) => validateToken(cookie.content)
+          case None         => IO.pure(Left("Missing token (header or cookie)"))
+        }
       }
+    }
     }
 
     val onFailure: AuthedRoutes[String, IO] = Kleisli { req =>

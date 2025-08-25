@@ -1,5 +1,6 @@
 package org.api
 import cats.effect._
+import cats.implicits.catsSyntaxOptionId
 import io.circe.generic.auto._
 import org.commons4n.CustomRecord
 import org.commons4n.service.MessageCache
@@ -37,9 +38,21 @@ object CustomRoutes {
 
       for {
         token <- client.expect[AccessToken](tokenReq)(jsonOf[IO, AccessToken])
-        cookie = ResponseCookie("kube_app_auth_token", token.access_token, httpOnly = true, secure = false)
+        cookie = ResponseCookie("kube_app_auth_token", token.access_token, httpOnly = true, secure = false,maxAge = 3600L.some)
         res <- Ok(s"Token received!").map(_.addCookie(cookie))
       } yield res
+
+      case GET -> Root / "logout" =>
+        val expired = ResponseCookie(
+          name = "auth_token",
+          content = "",
+          maxAge = Some(0),        // expire immediately
+          path = Some("/"),
+          httpOnly = true,
+          secure = false,          // set true in production
+          sameSite = Some(SameSite.Strict)
+        )
+        Ok("You are now logged out").map(_.addCookie(expired))
   }
 
   def authRoutes(cache: MessageCache[IO, String, CustomRecord]): AuthedRoutes[AuthUser, IO] =
