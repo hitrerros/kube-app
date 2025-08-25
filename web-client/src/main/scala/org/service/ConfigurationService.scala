@@ -5,9 +5,7 @@ import org.http4s.{ParseResult, Uri}
 
 import scala.language.implicitConversions
 
-
 object ConfigurationService {
-
   implicit def toUri(parseResult: ParseResult[Uri]) : Uri
   = parseResult match {
     case Right(value) => value
@@ -15,6 +13,8 @@ object ConfigurationService {
 
   // general launch profile
   private val env: String = sys.env.getOrElse("APP_ENV", "local") // default to local
+  val oauthClientId: String = sys.env.getOrElse("CLIENT_ID", "missed")
+  val oauthClientSecret: String = sys.env.getOrElse("CLIENT_SECRET", "missed")
   println(s"Application profile: ${env}")
 
   private val rootConfig: Config = ConfigFactory.load(s"application${if (env == "local") "" else "-container"}.conf")
@@ -25,8 +25,6 @@ object ConfigurationService {
   //oauth via GitHub
   private val oauthConfig: Config = ConfigFactory.load("authorization.conf")
 
-  val oauthClientId: String = sys.env.getOrElse("CLIENT_ID", "missed")
-  val oauthClientSecret: String = sys.env.getOrElse("CLIENT_SECRET", "missed")
   val authorizeUri: Uri = Uri.fromString(oauthConfig.getString("oauth.authorizeUri"))
   val tokenUri: Uri =  Uri.fromString(oauthConfig.getString("oauth.tokenUri"))
   val userUri: Uri =  Uri.fromString(oauthConfig.getString("oauth.userUri"))

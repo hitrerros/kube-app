@@ -22,7 +22,6 @@ object CustomRoutes {
         .withQueryParam("client_id", ConfigurationService.oauthClientId)
         .withQueryParam("redirect_uri", redirectUri)
         .withQueryParam("scope", "read:user user:email")
-
       SeeOther(Location(uri))
 
     // callback
@@ -38,7 +37,8 @@ object CustomRoutes {
 
       for {
         token <- client.expect[AccessToken](tokenReq)(jsonOf[IO, AccessToken])
-        res <- Ok(s"Here is your token: ${token.access_token}")
+        cookie = ResponseCookie("kube_app_auth_token", token.access_token, httpOnly = true, secure = false)
+        res <- Ok(s"Token received!").map(_.addCookie(cookie))
       } yield res
   }
 
